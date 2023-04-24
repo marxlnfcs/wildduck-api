@@ -1,0 +1,57 @@
+{
+  "name": "@marxlnfcs/wildduck-api",
+  "version": "1.0.0",
+  "description": "Provides a client to interact with the wildduck api",
+  "main": "index.js",
+  "private": false,
+  "scripts": {
+    "test": "jest --runInBand",
+    "generate-docs": "typedoc --options typedoc.config.js",
+    "generate-index": "rimraf ./src/index.ts && barrelsby --config ./barrelsby.config.json",
+    "generate-schema": "node scripts/generate-schemas.js",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc && node scripts/build-package.js",
+    "publish": "npm run build && cd dist && npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marxlnfcs/wildduck-api.git"
+  },
+  "keywords": [
+    "wildduck",
+    "api",
+    "restapi"
+  ],
+  "author": "marxlnfcs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marxlnfcs/wildduck-api/issues"
+  },
+  "homepage": "https://marxlnfcs.github.io/wildduck-api/",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "eventsource": "^2.0.2",
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/eventsource": "^1.1.11",
+    "@types/form-data": "^2.5.0",
+    "@types/inquirer": "^8.2.6",
+    "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.14.194",
+    "@types/node": "^17.0.45",
+    "barrelsby": "^2.5.1",
+    "glob": "^7.2.3",
+    "inquirer": "^8.2.5",
+    "jest": "^27.5.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.1.5",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.22.18"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  }
+}

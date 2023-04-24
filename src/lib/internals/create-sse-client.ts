@@ -1,7 +1,7 @@
 import {IWildduckClientOptions} from "../interfaces/client-options.interface";
 import {HttpClient} from "./create-http-client";
-import * as EventSource from 'eventsource';
-import {isArray, isNil, isString} from "lodash";
+import {isArray, isFunction, isNil, isString} from "lodash";
+import {SSESource, SSESourceOptions} from "../interfaces/sse.interface";
 
 /** @internal */
 export function createSSEClient(options: IWildduckClientOptions, httpClient?: HttpClient): SSEClient {
@@ -18,18 +18,20 @@ export class SSEClient {
         private http: HttpClient = new HttpClient(options),
     ){}
 
-    create(path?: string, params?: SSEPathParams|null): EventSource {
-        return new EventSource(
-            this.http.createUrl(path, { params }),
-            {
-                headers: {
-                    'X-Access-Token': this.options?.accessToken || '',
-                },
-                proxy: this.getProxy(),
-                https: { rejectUnauthorized: this.options.rejectUnauthorized ?? true },
-                rejectUnauthorized: this.options.rejectUnauthorized ?? true
-            }
-        );
+    create(path?: string, params?: SSEPathParams|null): SSESource {
+        const url = this.http.createUrl(path, { params });
+        const options: SSESourceOptions = {
+            headers: {
+                'X-Access-Token': this.options?.accessToken || '',
+            },
+            proxy: this.getProxy(),
+            https: { rejectUnauthorized: this.options.rejectUnauthorized ?? true },
+            rejectUnauthorized: this.options.rejectUnauthorized ?? true
+        };
+        if(isFunction(this.options?.onSSECreate)){
+            this.options.onSSECreate(url, options);
+        }
+        return new EventSource(url, options);
     }
 
     private getProxy(): string|null {

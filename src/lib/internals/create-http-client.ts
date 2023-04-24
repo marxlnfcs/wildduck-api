@@ -9,7 +9,7 @@ import {
     ResponseType
 } from "axios";
 import {isUrl, joinUrlPaths, joinUrls} from "./utilities";
-import {isNil, isString} from "lodash";
+import {isFunction, isNil, isString} from "lodash";
 import {IWildduckClientOptions} from "../interfaces/client-options.interface";
 import {createInvalidProxyConfigException, createInvalidProxyUrlException} from "../exceptions/invalid-proxy.exception";
 import {WildduckException} from "../exceptions/http.exception";
@@ -88,7 +88,27 @@ export class HttpClient {
 
     request<Response = any>(method: Method, path?: string|string[], options?: HttpOptions): HttpResult<Response> {
         const request = this.buildRequestOptions(method, path, options);
-        return this.http.request(request);
+        this.onRequest(request.url_full, request);
+        return this.http.request(request)
+            .then(response => {
+                this.onResponse(request.url_full, response);
+                return response;
+            })
+            .catch((error) => {
+                this.onError(request.url_full, error);
+                throw error;
+            })
+    }
+
+    /** Logging functions */
+    private onRequest(url: string, request: AxiosRequestConfig): void {
+        if(isFunction(this.options?.onRequest)) this.options?.onRequest(url, request);
+    }
+    private onResponse(url: string, response: AxiosResponse): void {
+        if(isFunction(this.options?.onResponse)) this.options?.onResponse(url, response);
+    }
+    private onError(url: string, error: any): void {
+        if(isFunction(this.options?.onError)) this.options?.onError(url, error);
     }
 
     /** Returns the http options */

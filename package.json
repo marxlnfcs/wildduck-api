@@ -1,6 +1,6 @@
 {
   "name": "@marxlnfcs/wildduck-api",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Provides a client to interact with the wildduck api",
   "main": "index.js",
   "private": false,

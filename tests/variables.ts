@@ -7,8 +7,8 @@ export const CLIENT = createWildduckClient({
     onRequest: (url, request) => {
         console.log(`${request.method} ${url}`);
     },
-    onResponse: (url, response) => {
-        console.log(`${response.request.method} ${url}: ${response.status} - ${response.statusText}`);
+    onResponse: (url, request, response) => {
+        console.log(`${request.method} ${url}: ${response.status} - ${response.statusText}`);
     },
     onError: (url, request, error) => {
         console.log(`${request.method} ${url}: Error - ${error.message}`);

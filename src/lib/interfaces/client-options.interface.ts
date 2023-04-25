@@ -8,7 +8,7 @@ export interface IWildduckClientOptions {
     proxy?: IWildduckClientOptionsProxy|string;
     rejectUnauthorized?: boolean;
     onRequest?: (url: string, request: AxiosRequestConfig) => void;
-    onResponse?: (url: string, response: AxiosResponse) => void;
+    onResponse?: (url: string, request: AxiosRequestConfig, response: AxiosResponse) => void;
     onError?: (url: string, request: AxiosRequestConfig, error: any) => void;
     onSSECreate?: (url: string, options: SSESourceOptions) => void;
 }

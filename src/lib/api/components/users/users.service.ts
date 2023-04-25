@@ -137,12 +137,11 @@ export class WildduckUsersService extends WildduckClientComponent {
      * List registered Users
      * @see https://docs.wildduck.email/api/#operation/getUsers
      *
-     * @param id - ID of the user
      * @param options
      */
-    getUsers(id: string, options?: Partial<IWildduckApiGetUsersOptions>): Promise<IWildduckApiGetUsersResponse> {
+    getUsers(options?: Partial<IWildduckApiGetUsersOptions>): Promise<IWildduckApiGetUsersResponse> {
         return new Promise<IWildduckApiGetUsersResponse>(async (resolve, reject) => {
-            this.http.get('/users', { params: { id }, query: options })
+            this.http.get('/users', { query: options })
                 .then(r => resolve(r.data))
                 .catch(e => reject(createHttpException(e)))
         });

@@ -91,7 +91,7 @@ export class HttpClient {
         this.onRequest(request.url_full, request);
         return this.http.request(request)
             .then(response => {
-                this.onResponse(request.url_full, response);
+                this.onResponse(request.url_full, request, response);
                 return response;
             })
             .catch((error) => {
@@ -104,8 +104,8 @@ export class HttpClient {
     private onRequest(url: string, request: AxiosRequestConfig): void {
         if(isFunction(this.options?.onRequest)) this.options?.onRequest(url, request);
     }
-    private onResponse(url: string, response: AxiosResponse): void {
-        if(isFunction(this.options?.onResponse)) this.options?.onResponse(url, response);
+    private onResponse(url: string, request: AxiosRequestConfig, response: AxiosResponse): void {
+        if(isFunction(this.options?.onResponse)) this.options?.onResponse(url, request, response);
     }
     private onError(url: string, error: any): void {
         if(isFunction(this.options?.onError)) this.options?.onError(url, error);

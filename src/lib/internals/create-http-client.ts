@@ -95,7 +95,7 @@ export class HttpClient {
                 return response;
             })
             .catch((error) => {
-                this.onError(request.url_full, error);
+                this.onError(request.url_full, request, error);
                 throw error;
             })
     }
@@ -107,8 +107,8 @@ export class HttpClient {
     private onResponse(url: string, request: AxiosRequestConfig, response: AxiosResponse): void {
         if(isFunction(this.options?.onResponse)) this.options?.onResponse(url, request, response);
     }
-    private onError(url: string, error: any): void {
-        if(isFunction(this.options?.onError)) this.options?.onError(url, error);
+    private onError(url: string, request: AxiosRequestConfig, error: any): void {
+        if(isFunction(this.options?.onError)) this.options?.onError(url, request, error);
     }
 
     /** Returns the http options */

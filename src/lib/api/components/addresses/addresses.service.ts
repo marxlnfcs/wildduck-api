@@ -64,7 +64,7 @@ export class WildduckAddressesService extends WildduckClientComponent {
      * @param address - ID of the address
      * @param dto
      */
-    updateForwardedAddress(address: string, dto?: IWildduckApiUpdateForwardedAddressRequest): Promise<IWildduckApiSuccessResponse> {
+    updateForwardedAddress(address: string, dto: IWildduckApiUpdateForwardedAddressRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>((resolve, reject) => {
             this.http.put('/addresses/forwarded/{address}', { params: { address }, body: dto })
                 .then(r => resolve(r.data))

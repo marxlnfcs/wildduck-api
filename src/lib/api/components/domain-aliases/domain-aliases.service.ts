@@ -50,7 +50,7 @@ export class WildduckDomainAliasesService extends WildduckClientComponent {
      *
      * @param options
      */
-    getAliases(options: Partial<IWildduckApiGetDomainAliasesOptions>): Promise<IWildduckApiGetDomainAliasesResponse> {
+    getAliases(options?: Partial<IWildduckApiGetDomainAliasesOptions>): Promise<IWildduckApiGetDomainAliasesResponse> {
         return new Promise<IWildduckApiGetDomainAliasesResponse>(async (resolve, reject) => {
             this.http.get('/domainaliases', { query: options })
                 .then(r => resolve(r.data))

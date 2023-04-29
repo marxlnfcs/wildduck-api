@@ -50,7 +50,7 @@ export class WildduckCertsService extends WildduckClientComponent {
      *
      * @param options
      */
-    getCertificates(options: Partial<IWildduckApiGetTLSCertsOptions>): Promise<IWildduckApiGetTLSCertsResponse> {
+    getCertificates(options?: Partial<IWildduckApiGetTLSCertsOptions>): Promise<IWildduckApiGetTLSCertsResponse> {
         return new Promise<IWildduckApiGetTLSCertsResponse>(async (resolve, reject) => {
             this.http.get('/certs', { query: options })
                 .then(r => resolve(r.data))

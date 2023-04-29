@@ -65,7 +65,7 @@ export class WildduckSettingsService extends WildduckClientComponent {
      *
      * @param options
      */
-    setSettings(options: Partial<IWildduckApiGetSettingsOptions>): Promise<IWildduckApiGetSettingsResponse> {
+    setSettings(options?: Partial<IWildduckApiGetSettingsOptions>): Promise<IWildduckApiGetSettingsResponse> {
         return new Promise<IWildduckApiGetSettingsResponse>(async (resolve, reject) => {
             this.http.get('/settings', { query: options })
                 .then(r => resolve(r.data))

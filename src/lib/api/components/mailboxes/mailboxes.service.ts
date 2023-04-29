@@ -69,7 +69,7 @@ export class WildduckMailboxesService extends WildduckClientComponent {
      * @param user - ID of the user
      * @param options
      */
-    getMailboxes(user: string, options: Partial<IWildduckApiGetMailboxesOptions>): Promise<IWildduckApiGetMailboxesResponse> {
+    getMailboxes(user: string, options?: Partial<IWildduckApiGetMailboxesOptions>): Promise<IWildduckApiGetMailboxesResponse> {
         return new Promise<IWildduckApiGetMailboxesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes', { params: { user }, query: options })
                 .then(r => resolve(r.data))

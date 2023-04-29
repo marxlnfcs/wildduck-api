@@ -81,7 +81,7 @@ export class WildduckDomainAliasesService extends WildduckClientComponent {
      */
     resolveAlias(alias: string): Promise<IWildduckApiResolveIdResponse> {
         return new Promise<IWildduckApiResolveIdResponse>(async (resolve, reject) => {
-            this.http.post('/domainaliases/resolve/{alias}', { params: { alias } })
+            this.http.get('/domainaliases/resolve/{alias}', { params: { alias } })
                 .then(r => resolve(r.data))
                 .catch(e => reject(createHttpException(e)))
         });

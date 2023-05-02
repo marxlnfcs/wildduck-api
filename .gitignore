@@ -1,7 +1,7 @@
 # compiled output
 /node_modules
 /dist
-package-log.json
+package-lock.json
 /coverage
 
 # IDEs and editors

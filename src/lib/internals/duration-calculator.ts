@@ -37,12 +37,13 @@ export class DurationCalculator {
       seconds: Math.trunc(ms / 1000) % 60,
       ms: Math.trunc(ms) % 1000
     };
-    return [
+    const output = [
       parsed.days ? `${parsed.days}d` : null,
       parsed.hours ? `${parsed.hours}h` : null,
-      parsed.hours ? `${parsed.minutes}m` : null,
-      parsed.hours ? `${parsed.seconds}s` : null,
-      parsed.hours ? `${parsed.ms}ms` : null,
-    ].filter(d => !!d).join(' ');
+      parsed.minutes ? `${parsed.minutes}m` : null,
+      parsed.seconds ? `${parsed.seconds}s` : null,
+      parsed.ms ? `${parsed.ms}ms` : null,
+    ].filter(d => !!d).join(' ')
+    return output || '0ms';
   }
 }

@@ -29,7 +29,10 @@ export class SSEClient {
             rejectUnauthorized: this.options.rejectUnauthorized ?? true
         };
         if(isFunction(this.options?.onSSECreate)){
-            this.options.onSSECreate(url, options);
+            this.options.onSSECreate({
+                url: url,
+                sseOptions: options,
+            });
         }
         return new EventSource(url, options);
     }

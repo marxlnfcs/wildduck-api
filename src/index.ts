@@ -51,4 +51,5 @@ export * from './lib/interfaces/http.interface';
 export * from './lib/interfaces/sse.interface';
 export * from './lib/internals/create-http-client';
 export * from './lib/internals/create-sse-client';
+export * from './lib/internals/duration-calculator';
 export * from './lib/internals/utilities';

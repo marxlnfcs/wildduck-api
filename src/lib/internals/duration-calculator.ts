@@ -29,21 +29,17 @@ export class DurationCalculator {
   }
 
   get durationString(): string {
-    const ms = this.duration;
-    const parsed = {
-      days: Math.trunc(ms / 86400000),
-      hours: Math.trunc(ms / 3600000) % 24,
-      minutes: Math.trunc(ms / 60000) % 60,
-      seconds: Math.trunc(ms / 1000) % 60,
-      ms: Math.trunc(ms) % 1000
-    };
-    const output = [
-      parsed.days ? `${parsed.days}d` : null,
-      parsed.hours ? `${parsed.hours}h` : null,
-      parsed.minutes ? `${parsed.minutes}m` : null,
-      parsed.seconds ? `${parsed.seconds}s` : null,
-      parsed.ms ? `${parsed.ms}ms` : null,
-    ].filter(d => !!d).join(' ')
-    return output || '0ms';
+    const duration = this.duration;
+    const days = Math.trunc(duration / 86400000);
+    const hours = Math.trunc(duration / 3600000) % 24;
+    const minutes = Math.trunc(duration / 60000) % 60;
+    const seconds = Math.trunc(duration / 1000) % 60;
+    switch(true){
+      case days > 0: return days + 'd';
+      case hours > 0: return hours + 'h';
+      case minutes > 0: return minutes + 'm';
+      case seconds > 0: return seconds + 's';
+      default: return duration + 'ms';
+    }
   }
 }

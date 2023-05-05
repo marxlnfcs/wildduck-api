@@ -91,20 +91,29 @@ export class HttpClient {
     }
 
     request<Response = any>(method: Method, path?: string|string[], options?: HttpOptions): HttpResult<Response> {
-        const duration = createDurationCalculator().start();
-        const request = this.buildRequestOptions(method, path, options);
-        this.onRequest(duration, request);
-        return this.http.request(request)
-            .then(response => {
-                duration.stop();
-                this.onResponse(duration, request, response);
-                return response;
-            })
-            .catch((error) => {
-                duration.stop();
-                this.onError(duration, request, error);
-                throw error;
-            })
+        return new Promise<AxiosResponse<Response>>(async (resolve, reject) => {
+            try{
+                const duration = createDurationCalculator().start();
+                const request = this.buildRequestOptions(method, path, options);
+                this.onRequest(duration, request);
+                if(this.options?.delay){
+                   await Promise.resolve(new Promise<void>((r) => setTimeout(() => r(), this.options.delay)));
+                }
+                this.http.request(request)
+                  .then(response => {
+                      duration.stop();
+                      this.onResponse(duration, request, response);
+                      resolve(response);
+                  })
+                  .catch((error) => {
+                      duration.stop();
+                      this.onError(duration, request, error);
+                      reject(error);
+                  });
+            }catch(e){
+                reject(e);
+            }
+        });
     }
 
     /** Logging functions */
@@ -222,7 +231,7 @@ export function createHttpProxySettings(options: IWildduckClientOptions): AxiosP
             return {
                 host: url.hostname,
                 port: parseInt(url.port),
-                protocol: url.protocol + ':',
+                protocol: url.protocol,
                 auth: !isString(options?.proxy) ? options?.proxy?.auth : null
             }
         }catch(e){
@@ -239,7 +248,7 @@ export function createHttpProxySettings(options: IWildduckClientOptions): AxiosP
     return {
         host: options.proxy.host,
         port: options.proxy.port,
-        protocol: options.proxy.protocol + ':',
+        protocol: options.proxy.protocol.endsWith(':') ? options.proxy.protocol : options.proxy.protocol + ':',
         auth: options.proxy.auth
     }
 

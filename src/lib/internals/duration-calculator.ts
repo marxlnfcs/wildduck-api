@@ -17,7 +17,7 @@ export class DurationCalculator {
   }
 
   stop(): this {
-    this._startDate = new Date();
+    this._endDate = new Date();
     return this;
   }
 
@@ -25,7 +25,7 @@ export class DurationCalculator {
     if(!this.startDate || !this.endDate){
       return 0;
     }
-    return this.endDate.getTime() - this.endDate.getTime();
+    return this.endDate.getTime() - this.startDate.getTime();
   }
 
   get durationString(): string {

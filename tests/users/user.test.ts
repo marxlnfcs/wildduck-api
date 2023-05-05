@@ -3,7 +3,7 @@ import {IWildduckApiCreateUserRequest, IWildduckApiGetUserResponse} from "../../
 
 /** Variables */
 const data: IWildduckApiCreateUserRequest = {
-    username: 'admin',
+    username: 'admin2',
     name: 'Administrator',
     password: 'test'
 }

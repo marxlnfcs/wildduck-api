@@ -6,6 +6,7 @@ export interface IWildduckClientOptions {
     accessToken: string;
     timeout?: number;
     proxy?: IWildduckClientOptionsProxy|string;
+    delay?: number;
     rejectUnauthorized?: boolean;
     onRequest?: (data: IWildduckClientOptionsOnRequestHandlerData) => void;
     onResponse?: (data: IWildduckClientOptionsOnResponseHandlerData) => void;

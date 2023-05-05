@@ -1,9 +1,9 @@
 import {CLIENT, throwError} from "../variables";
-import {IWildduckApiCreateUserRequest, IWildduckApiCreateUserResponse, IWildduckApiGetUserResponse} from "../../src";
+import {IWildduckApiCreateUserRequest, IWildduckApiGetUserResponse} from "../../src";
 
 /** Variables */
 const data: IWildduckApiCreateUserRequest = {
-    username: 'admin',
+    username: 'admin2',
     name: 'Administrator',
     password: 'test'
 }

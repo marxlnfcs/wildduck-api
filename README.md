@@ -10,7 +10,7 @@
 > This library is still in progress and might have some bugs or features that are not working properly.
 > If you find some bugs or missing/not working features, please feel free to create an issue.
 
-> You can find all endpoints here: [Wildduc API Documentation](https://docs.wildduck.email)
+> You can find all endpoints here: [Wildduck API Documentation](https://docs.wildduck.email)
 
 ## Installation
 ```
@@ -77,8 +77,7 @@ createWildduckClient({
 | accessToken        | string                     | -       | Access token to authenticate with the wildduck api          |
 | timeout            | number                     | null    | Defines the timeout of api requests in milliseconds         |
 | proxy              | ClientProxyOptions, string | null    | Whether to use a proxy or not                               |
-| rejectUnauthorized | boolean                    | true    | If false, the client rejects all unsecure https connections | 
-
+| rejectUnauthorized | boolean                    | true    | If false, the client rejects all unsecure https connections |
 
 #### ClientProxyOptions
 | Property      | Type        | Default   | Description                   |

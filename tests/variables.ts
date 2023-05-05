@@ -4,17 +4,18 @@ export const CLIENT = createWildduckClient({
     baseUrl: process.env.WD_API_URL,
     accessToken: process.env.WD_API_ACCESS_TOKEN,
     rejectUnauthorized: false,
-    onRequest: (url, request) => {
-        console.log(`${request.method} ${url}`);
+    delay: 2000,
+    onRequest: (data) => {
+        console.log(`${data.request.method} ${data.url}`);
     },
-    onResponse: (url, request, response) => {
-        console.log(`${request.method} ${url}: ${response.status} - ${response.statusText}`);
+    onResponse: (data) => {
+        console.log(`${data.request.method} ${data.url}: ${data.response.status} - ${data.response.statusText} - ${data.duration} - ${data.durationString}`);
     },
-    onError: (url, request, error) => {
-        console.log(`${request.method} ${url}: Error - ${error.message}`);
+    onError: (data) => {
+        console.log(`${data.request.method} ${data.url}: Error - ${data.error.message} - ${data.duration} - ${data.durationString}`);
     },
-    onSSECreate: (url, options) => {
-        console.log(`SSE ${url}: `, options);
+    onSSECreate: (data) => {
+        console.log(`SSE ${data.url}: `, data.sseOptions);
     }
 });
 

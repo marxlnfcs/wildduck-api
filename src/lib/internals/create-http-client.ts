@@ -20,6 +20,7 @@ import {WildduckUnprocessableEntityException} from "../exceptions/unprocessable-
 import {WildduckInternalServerErrorException} from "../exceptions/internal-server-error.exception";
 import {WildduckUnknownErrorException} from "../exceptions/unknown-error.exception";
 import * as https from "https";
+import {createDurationCalculator, DurationCalculator} from "./duration-calculator";
 
 /** @internal */
 export function createHttpClient(options: IWildduckClientOptions): HttpClient {
@@ -34,6 +35,9 @@ export interface HttpOptions<Body = any> {
     body?: Body|FormData|null;
     responseType?: ResponseType;
     responseEncoding?: responseEncoding|string;
+}
+export interface HttpRequestConfig extends AxiosRequestConfig {
+    url_full: string;
 }
 
 /** @internal */
@@ -87,32 +91,64 @@ export class HttpClient {
     }
 
     request<Response = any>(method: Method, path?: string|string[], options?: HttpOptions): HttpResult<Response> {
-        const request = this.buildRequestOptions(method, path, options);
-        this.onRequest(request.url_full, request);
-        return this.http.request(request)
-            .then(response => {
-                this.onResponse(request.url_full, request, response);
-                return response;
-            })
-            .catch((error) => {
-                this.onError(request.url_full, request, error);
-                throw error;
-            })
+        return new Promise<AxiosResponse<Response>>(async (resolve, reject) => {
+            try{
+                const duration = createDurationCalculator().start();
+                const request = this.buildRequestOptions(method, path, options);
+                this.onRequest(duration, request);
+                if(this.options?.delay){
+                   await Promise.resolve(new Promise<void>((r) => setTimeout(() => r(), this.options.delay)));
+                }
+                this.http.request(request)
+                  .then(response => {
+                      duration.stop();
+                      this.onResponse(duration, request, response);
+                      resolve(response);
+                  })
+                  .catch((error) => {
+                      duration.stop();
+                      this.onError(duration, request, error);
+                      reject(error);
+                  });
+            }catch(e){
+                reject(e);
+            }
+        });
     }
 
     /** Logging functions */
-    private onRequest(url: string, request: AxiosRequestConfig): void {
-        if(isFunction(this.options?.onRequest)) this.options?.onRequest(url, request);
+    private onRequest(duration: DurationCalculator, request: HttpRequestConfig): void {
+        if(isFunction(this.options?.onRequest)) this.options?.onRequest({
+            url: request.url_full,
+            request: request,
+            startDate: duration.startDate,
+        });
     }
-    private onResponse(url: string, request: AxiosRequestConfig, response: AxiosResponse): void {
-        if(isFunction(this.options?.onResponse)) this.options?.onResponse(url, request, response);
+    private onResponse(duration: DurationCalculator, request: HttpRequestConfig, response: AxiosResponse): void {
+        if(isFunction(this.options?.onResponse)) this.options?.onResponse({
+            url: request.url_full,
+            request: request,
+            response: response,
+            startDate: duration.startDate,
+            endDate: duration.endDate,
+            duration: duration.duration,
+            durationString: duration.durationString
+        });
     }
-    private onError(url: string, request: AxiosRequestConfig, error: any): void {
-        if(isFunction(this.options?.onError)) this.options?.onError(url, request, error);
+    private onError(duration: DurationCalculator, request: HttpRequestConfig, error: any): void {
+        if(isFunction(this.options?.onError)) this.options?.onError({
+            url: request.url_full,
+            request: request,
+            error: error,
+            startDate: duration.startDate,
+            endDate: duration.endDate,
+            duration: duration.duration,
+            durationString: duration.durationString
+        });
     }
 
     /** Returns the http options */
-    private buildRequestOptions(method: Method, path?: string|string[], options?: HttpOptions): AxiosRequestConfig & { url_full: string } {
+    private buildRequestOptions(method: Method, path?: string|string[], options?: HttpOptions): HttpRequestConfig {
 
         // sets the default options object
         options = {
@@ -195,7 +231,7 @@ export function createHttpProxySettings(options: IWildduckClientOptions): AxiosP
             return {
                 host: url.hostname,
                 port: parseInt(url.port),
-                protocol: url.protocol + ':',
+                protocol: url.protocol,
                 auth: !isString(options?.proxy) ? options?.proxy?.auth : null
             }
         }catch(e){
@@ -212,7 +248,7 @@ export function createHttpProxySettings(options: IWildduckClientOptions): AxiosP
     return {
         host: options.proxy.host,
         port: options.proxy.port,
-        protocol: options.proxy.protocol + ':',
+        protocol: options.proxy.protocol.endsWith(':') ? options.proxy.protocol : options.proxy.protocol + ':',
         auth: options.proxy.auth
     }
 

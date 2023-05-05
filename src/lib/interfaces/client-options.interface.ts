@@ -6,11 +6,12 @@ export interface IWildduckClientOptions {
     accessToken: string;
     timeout?: number;
     proxy?: IWildduckClientOptionsProxy|string;
+    delay?: number;
     rejectUnauthorized?: boolean;
-    onRequest?: (url: string, request: AxiosRequestConfig) => void;
-    onResponse?: (url: string, request: AxiosRequestConfig, response: AxiosResponse) => void;
-    onError?: (url: string, request: AxiosRequestConfig, error: any) => void;
-    onSSECreate?: (url: string, options: SSESourceOptions) => void;
+    onRequest?: (data: IWildduckClientOptionsOnRequestHandlerData) => void;
+    onResponse?: (data: IWildduckClientOptionsOnResponseHandlerData) => void;
+    onError?: (data: IWildduckClientOptionsOnErrorHandlerData) => void;
+    onSSECreate?: (data: IWildduckClientOptionsOnSSECreateHandlerData) => void;
 }
 
 export interface IWildduckClientOptionsProxy {
@@ -22,4 +23,35 @@ export interface IWildduckClientOptionsProxy {
         username: string;
         password: string;
     };
+}
+
+export interface IWildduckClientOptionsOnRequestHandlerData {
+    url: string;
+    request: AxiosRequestConfig;
+    startDate: Date;
+}
+
+export interface IWildduckClientOptionsOnResponseHandlerData {
+    url: string;
+    request: AxiosRequestConfig;
+    response: AxiosResponse;
+    startDate: Date;
+    endDate: Date;
+    duration: number;
+    durationString: string;
+}
+
+export interface IWildduckClientOptionsOnErrorHandlerData {
+    url: string;
+    request: AxiosRequestConfig;
+    error: any;
+    startDate: Date;
+    endDate: Date;
+    duration: number;
+    durationString: string;
+}
+
+export interface IWildduckClientOptionsOnSSECreateHandlerData {
+    url: string;
+    sseOptions: SSESourceOptions;
 }

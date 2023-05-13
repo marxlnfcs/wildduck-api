@@ -22,6 +22,7 @@ import {
     IWildduckApiGetUserAddressesregisterOptions,
     IWildduckApiResolveAddressOptions
 } from "./addresses.interface";
+import {AxiosError} from "axios";
 
 /**
  * Addresses
@@ -38,8 +39,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     deleteForwardedAddress(address: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/addresses/forwarded/{address}', { params: { address } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+                .then(r => {
+                    this.events.emitFromResponse(this.deleteForwardedAddress, r);
+                    resolve(r.data);
+                })
+                .catch((e: AxiosError) => {
+                    this.events.emitFromError(this.deleteForwardedAddress, e);
+                    reject(createHttpException(e));
+                })
         });
     }
 
@@ -52,8 +59,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     getForwardedAddress(address: string): Promise<IWildduckApiGetForwardedAddressResponse> {
         return new Promise<IWildduckApiGetForwardedAddressResponse>((resolve, reject) => {
             this.http.get('/addresses/forwarded/{address}', { params: { address } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getForwardedAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getForwardedAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -67,8 +80,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     updateForwardedAddress(address: string, dto: IWildduckApiUpdateForwardedAddressRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>((resolve, reject) => {
             this.http.put('/addresses/forwarded/{address}', { params: { address }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateForwardedAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateForwardedAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -82,8 +101,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     deleteUserAddress(user: string, address: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>((resolve, reject) => {
             this.http.delete('/users/{user}/addresses/{address}', { params: { user, address } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteUserAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteUserAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -97,8 +122,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     getUserAddress(user: string, address: string): Promise<IWildduckApiGetUserAddressResponse> {
         return new Promise<IWildduckApiGetUserAddressResponse>((resolve, reject) => {
             this.http.get('/users/{user}/addresses/{address}', { params: { user, address } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getUserAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getUserAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -113,8 +144,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     updateUserAddress(user: string, address: string, dto: IWildduckApiUpdateUserAddressRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>((resolve, reject) => {
             this.http.put('/users/{user}/addresses/{address}', { params: { user, address }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateUserAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateUserAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -128,8 +165,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     resolveAddress(address: string, options?: Partial<IWildduckApiResolveAddressOptions>): Promise<IWildduckApiResolveAddressResponse> {
         return new Promise<IWildduckApiResolveAddressResponse>((resolve, reject) => {
             this.http.get('/addresses/{address}', { params: { address }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.resolveAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.resolveAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -142,8 +185,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     getRegisteredAddresses(options?: Partial<IWildduckApiGetAddressesOptions>): Promise<IWildduckApiGetAddressesResponse> {
         return new Promise<IWildduckApiGetAddressesResponse>((resolve, reject) => {
             this.http.get('/addresses', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getRegisteredAddresses, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getRegisteredAddresses, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -157,8 +206,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     getRegisteredUserAddresses(user: string, options?: Partial<IWildduckApiGetUserAddressesOptions>): Promise<IWildduckApiGetUserAddressesResponse> {
         return new Promise<IWildduckApiGetUserAddressesResponse>((resolve, reject) => {
             this.http.get('/users/{user}/addresses', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getRegisteredUserAddresses, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getRegisteredUserAddresses, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -173,8 +228,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     createUserAddress(user: string, dto: IWildduckApiCreateUserAddressRequest): Promise<IWildduckApiCreateUserAddressResponse> {
         return new Promise<IWildduckApiCreateUserAddressResponse>((resolve, reject) => {
             this.http.post('/users/{user}/addresses', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createUserAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createUserAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -188,8 +249,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     getUserAddressesFromRegister(user: string, options?: Partial<IWildduckApiGetUserAddressesregisterOptions> & Pick<IWildduckApiGetUserAddressesregisterOptions, 'query'>): Promise<IWildduckApiGetUserAddressesregisterResponse> {
         return new Promise<IWildduckApiGetUserAddressesregisterResponse>((resolve, reject) => {
             this.http.get('/users/{user}/addressregister', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getUserAddressesFromRegister, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getUserAddressesFromRegister, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -202,8 +269,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     createForwardedAddress(dto: IWildduckApiCreateForwardedAddressRequest): Promise<IWildduckApiCreateForwardedAddressResponse> {
         return new Promise<IWildduckApiCreateForwardedAddressResponse>((resolve, reject) => {
             this.http.post('/addresses/forwarded', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createForwardedAddress, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createForwardedAddress, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -216,8 +289,14 @@ export class WildduckAddressesService extends WildduckClientComponent {
     renameDomain(dto: IWildduckApiRenameDomainRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>((resolve, reject) => {
             this.http.put('/addresses/renameDomain', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.renameDomain, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.renameDomain, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

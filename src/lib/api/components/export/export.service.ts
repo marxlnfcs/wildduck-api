@@ -1,6 +1,7 @@
 import {WildduckClientComponent} from "../../client-component";
 import {createHttpException} from "../../../internals/create-http-client";
 import {IWildduckApiCreateExportOptions, IWildduckApiCreateImportResponse} from "./export.interface";
+import {AxiosError} from "axios";
 
 /**
  * Export
@@ -17,8 +18,14 @@ export class WildduckExportService extends WildduckClientComponent {
     exportData(options?: Partial<IWildduckApiCreateExportOptions>): Promise<Buffer> {
         return new Promise<Buffer>(async (resolve, reject) => {
             this.http.download('/data/export', { method: 'POST', query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.exportData, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.exportData, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -31,8 +38,14 @@ export class WildduckExportService extends WildduckClientComponent {
     importData(data: Buffer): Promise<IWildduckApiCreateImportResponse> {
         return new Promise<IWildduckApiCreateImportResponse>(async (resolve, reject) => {
             this.http.upload('/data/import', { method: 'POST', body: data })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.importData, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.importData, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

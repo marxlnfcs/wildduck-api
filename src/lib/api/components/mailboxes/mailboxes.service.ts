@@ -9,6 +9,7 @@ import {
     IWildduckApiUpdateMailboxRequest
 } from "../../client-schema";
 import {IWildduckApiGetMailboxesOptions} from "./mailboxes.interface";
+import {AxiosError} from "axios";
 
 /**
  * Mailboxes
@@ -26,8 +27,14 @@ export class WildduckMailboxesService extends WildduckClientComponent {
     deleteMailbox(user: string, mailbox: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/mailboxes/{mailbox}', { params: { user, mailbox } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -41,8 +48,14 @@ export class WildduckMailboxesService extends WildduckClientComponent {
     getMailbox(user: string, mailbox: string): Promise<IWildduckApiGetMailboxResponse> {
         return new Promise<IWildduckApiGetMailboxResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes/{mailbox}', { params: { user, mailbox } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -57,8 +70,14 @@ export class WildduckMailboxesService extends WildduckClientComponent {
     updateMailbox(user: string, mailbox: string, dto: IWildduckApiUpdateMailboxRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.put('/users/{user}/mailboxes/{mailbox}', { params: { user, mailbox }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -72,8 +91,14 @@ export class WildduckMailboxesService extends WildduckClientComponent {
     getMailboxes(user: string, options?: Partial<IWildduckApiGetMailboxesOptions>): Promise<IWildduckApiGetMailboxesResponse> {
         return new Promise<IWildduckApiGetMailboxesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getMailboxes, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getMailboxes, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -87,8 +112,14 @@ export class WildduckMailboxesService extends WildduckClientComponent {
     createMailbox(user: string, dto: IWildduckApiCreateMailboxRequest): Promise<IWildduckApiCreateMailboxResponse> {
         return new Promise<IWildduckApiCreateMailboxResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/mailboxes', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

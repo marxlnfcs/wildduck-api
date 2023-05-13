@@ -1,6 +1,7 @@
 import {WildduckClientComponent} from "../../client-component";
 import {createHttpException} from "../../../internals/create-http-client";
 import {IWildduckApiSubmitMessageRequest, IWildduckApiSubmitMessageResponse} from "../../client-schema";
+import {AxiosError} from "axios";
 
 /**
  * Submission
@@ -19,8 +20,14 @@ export class WildduckSubmissionService extends WildduckClientComponent {
     submitMessage(user: string, dto: IWildduckApiSubmitMessageRequest): Promise<IWildduckApiSubmitMessageResponse> {
         return new Promise<IWildduckApiSubmitMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/submit', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.submitMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.submitMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

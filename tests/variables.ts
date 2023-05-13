@@ -6,16 +6,16 @@ export const CLIENT = createWildduckClient({
     rejectUnauthorized: false,
     delay: 2000,
     onRequest: (data) => {
-        console.log(`${data.request.method} ${data.url}`);
+        //console.log(`${data.request.method} ${data.url}`);
     },
     onResponse: (data) => {
-        console.log(`${data.request.method} ${data.url}: ${data.response.status} - ${data.response.statusText} - ${data.duration} - ${data.durationString}`);
+        //console.log(`${data.request.method} ${data.url}: ${data.response.status} - ${data.response.statusText} - ${data.duration} - ${data.durationString}`);
     },
     onError: (data) => {
-        console.log(`${data.request.method} ${data.url}: Error - ${data.error.message} - ${data.duration} - ${data.durationString}`);
+        //console.log(`${data.request.method} ${data.url}: Error - ${data.error.message} - ${data.duration} - ${data.durationString}`);
     },
     onSSECreate: (data) => {
-        console.log(`SSE ${data.url}: `, data.sseOptions);
+        //console.log(`SSE ${data.url}: `, data.sseOptions);
     }
 });
 

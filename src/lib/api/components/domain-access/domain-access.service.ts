@@ -9,6 +9,7 @@ import {
     IWildduckApiGetBlockedDomainResponse,
     IWildduckApiSuccessResponse
 } from "../../client-schema";
+import {AxiosError} from "axios";
 
 /**
  * Domain Access
@@ -25,8 +26,14 @@ export class WildduckDomainAccessService extends WildduckClientComponent {
     deleteDomainListing(domain: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/domainaccess/{domain}', { params: { domain } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteDomainListing, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteDomainListing, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -39,8 +46,14 @@ export class WildduckDomainAccessService extends WildduckClientComponent {
     getAllowedDomains(tag: string): Promise<IWildduckApiGetAllowedDomainResponse> {
         return new Promise<IWildduckApiGetAllowedDomainResponse>(async (resolve, reject) => {
             this.http.get('/domainaccess/{tag}/allow', { params: { tag } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getAllowedDomains, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getAllowedDomains, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -54,8 +67,14 @@ export class WildduckDomainAccessService extends WildduckClientComponent {
     addAllowedDomain(tag: string, dto: IWildduckApiCreateAllowedDomainRequest): Promise<IWildduckApiCreateAllowedDomainResponse> {
         return new Promise<IWildduckApiCreateAllowedDomainResponse>(async (resolve, reject) => {
             this.http.post('/domainaccess/{tag}/allow', { params: { tag }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.addAllowedDomain, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.addAllowedDomain, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -68,8 +87,14 @@ export class WildduckDomainAccessService extends WildduckClientComponent {
     getBlockedDomains(tag: string): Promise<IWildduckApiGetBlockedDomainResponse> {
         return new Promise<IWildduckApiGetBlockedDomainResponse>(async (resolve, reject) => {
             this.http.post('/domainaccess/{tag}/block', { params: { tag } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getBlockedDomains, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getBlockedDomains, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -83,8 +108,14 @@ export class WildduckDomainAccessService extends WildduckClientComponent {
     addBlockedDomain(tag: string, dto: IWildduckApiCreateBlockedDomainRequest): Promise<IWildduckApiCreateBlockedDomainResponse> {
         return new Promise<IWildduckApiCreateBlockedDomainResponse>(async (resolve, reject) => {
             this.http.post('/domainaccess/{tag}/block', { params: { tag }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.addBlockedDomain, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.addBlockedDomain, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

@@ -21,33 +21,45 @@ import {WildduckWebhooksService} from "./components/webhooks/webhooks.service";
 import {WildduckExportService} from "./components/export/export.service";
 import {WildduckAuditService} from "./components/audit/audit.service";
 import {createSSEClient} from "../internals/create-sse-client";
+import {createEventClient, EventClientEvent} from "../internals/create-event-client";
+import {Observable} from "rxjs";
 
 export class WildduckClient {
     private http = createHttpClient(this.options)
     private sse = createSSEClient(this.options);
+    private events = createEventClient();
 
     constructor(
         private options: IWildduckClientOptions
     ){}
 
-    readonly addresses: WildduckAddressesService = new WildduckAddressesService(this.http, this.sse);
-    readonly applicationPasswords: WildduckApplicationPasswordsService = new WildduckApplicationPasswordsService(this.http, this.sse);
-    readonly archive: WildduckArchiveService = new WildduckArchiveService(this.http, this.sse);
-    readonly audit: WildduckAuditService = new WildduckAuditService(this.http, this.sse);
-    readonly authentication: WildduckAuthenticationService = new WildduckAuthenticationService(this.http, this.sse);
-    readonly autoReplies: WildduckAutoRepliesService = new WildduckAutoRepliesService(this.http, this.sse);
-    readonly certs: WildduckCertsService = new WildduckCertsService(this.http, this.sse);
-    readonly dkim: WildduckDKIMService = new WildduckDKIMService(this.http, this.sse);
-    readonly domainAccess: WildduckDomainAccessService = new WildduckDomainAccessService(this.http, this.sse);
-    readonly domainAliases: WildduckDomainAliasesService = new WildduckDomainAliasesService(this.http, this.sse);
-    readonly filters: WildduckFiltersService = new WildduckFiltersService(this.http, this.sse);
-    readonly mailboxes: WildduckMailboxesService = new WildduckMailboxesService(this.http, this.sse);
-    readonly messages: WildduckMessagesService = new WildduckMessagesService(this.http, this.sse);
-    readonly settings: WildduckSettingsService = new WildduckSettingsService(this.http, this.sse);
-    readonly storage: WildduckStorageService = new WildduckStorageService(this.http, this.sse);
-    readonly submission: WildduckSubmissionService = new WildduckSubmissionService(this.http, this.sse);
-    readonly twoFactorAuth: WildduckTwoFactorAuthService = new WildduckTwoFactorAuthService(this.http, this.sse);
-    readonly users: WildduckUsersService = new WildduckUsersService(this.http, this.sse);
-    readonly webhooks: WildduckWebhooksService = new WildduckWebhooksService(this.http, this.sse);
-    readonly exports: WildduckExportService = new WildduckExportService(this.http, this.sse);
+    readonly addresses: WildduckAddressesService = new WildduckAddressesService(this.http, this.sse, this.events);
+    readonly applicationPasswords: WildduckApplicationPasswordsService = new WildduckApplicationPasswordsService(this.http, this.sse, this.events);
+    readonly archive: WildduckArchiveService = new WildduckArchiveService(this.http, this.sse, this.events);
+    readonly audit: WildduckAuditService = new WildduckAuditService(this.http, this.sse, this.events);
+    readonly authentication: WildduckAuthenticationService = new WildduckAuthenticationService(this.http, this.sse, this.events);
+    readonly autoReplies: WildduckAutoRepliesService = new WildduckAutoRepliesService(this.http, this.sse, this.events);
+    readonly certs: WildduckCertsService = new WildduckCertsService(this.http, this.sse, this.events);
+    readonly dkim: WildduckDKIMService = new WildduckDKIMService(this.http, this.sse, this.events);
+    readonly domainAccess: WildduckDomainAccessService = new WildduckDomainAccessService(this.http, this.sse, this.events);
+    readonly domainAliases: WildduckDomainAliasesService = new WildduckDomainAliasesService(this.http, this.sse, this.events);
+    readonly filters: WildduckFiltersService = new WildduckFiltersService(this.http, this.sse, this.events);
+    readonly mailboxes: WildduckMailboxesService = new WildduckMailboxesService(this.http, this.sse, this.events);
+    readonly messages: WildduckMessagesService = new WildduckMessagesService(this.http, this.sse, this.events);
+    readonly settings: WildduckSettingsService = new WildduckSettingsService(this.http, this.sse, this.events);
+    readonly storage: WildduckStorageService = new WildduckStorageService(this.http, this.sse, this.events);
+    readonly submission: WildduckSubmissionService = new WildduckSubmissionService(this.http, this.sse, this.events);
+    readonly twoFactorAuth: WildduckTwoFactorAuthService = new WildduckTwoFactorAuthService(this.http, this.sse, this.events);
+    readonly users: WildduckUsersService = new WildduckUsersService(this.http, this.sse, this.events);
+    readonly webhooks: WildduckWebhooksService = new WildduckWebhooksService(this.http, this.sse, this.events);
+    readonly exports: WildduckExportService = new WildduckExportService(this.http, this.sse, this.events);
+
+    /**
+     * Creates an event handler for the specific api function
+     * To use this, set the function as first parameter on the function
+     * @param id
+     */
+    on<RequestData = any, ResponseData = any>(id: Function): Observable<EventClientEvent<RequestData, ResponseData>> {
+        return this.events.on(id);
+    }
 }

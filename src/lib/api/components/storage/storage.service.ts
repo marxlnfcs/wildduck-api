@@ -3,6 +3,7 @@ import {createHttpException} from "../../../internals/create-http-client";
 import {IWildduckApiGetFilesResponse, IWildduckApiSuccessResponse} from "../../client-schema";
 import {IWildduckApiGetFilesOptions, IWildduckApiUploadFileRequest} from "./storage.interface";
 import * as FormData from 'form-data';
+import {AxiosError} from "axios";
 
 /**
  * Storage
@@ -21,8 +22,14 @@ export class WildduckStorageService extends WildduckClientComponent {
     deleteFile(user: string, file: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/storage/{file}', { params: { user, file } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteFile, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteFile, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -36,8 +43,14 @@ export class WildduckStorageService extends WildduckClientComponent {
     downloadFile(user: string, file: string): Promise<Buffer> {
         return new Promise<Buffer>(async (resolve, reject) => {
             this.http.download('/users/{user}/storage/{file}', { params: { user, file } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.downloadFile, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.downloadFile, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -51,8 +64,14 @@ export class WildduckStorageService extends WildduckClientComponent {
     getFiles(user: string, options?: Partial<IWildduckApiGetFilesOptions>): Promise<IWildduckApiGetFilesResponse> {
         return new Promise<IWildduckApiGetFilesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/storage', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getFiles, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getFiles, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -74,8 +93,14 @@ export class WildduckStorageService extends WildduckClientComponent {
             }
             // execute request
             this.http.post('/users/{user}/storage', { params: { user }, body: data })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.uploadFile, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.uploadFile, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

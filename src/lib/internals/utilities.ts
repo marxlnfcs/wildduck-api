@@ -1,3 +1,5 @@
+import * as md5 from 'md5';
+
 /** @internal */
 export function joinUrls(baseUrl: string, ...urls: Array<URL|string>): string {
     return [
@@ -20,4 +22,9 @@ export function isUrl(url?: string|null): boolean {
     }catch{
         return false;
     }
+}
+
+/** @internal */
+export function createChecksum(text: string): string {
+    return md5(text);
 }

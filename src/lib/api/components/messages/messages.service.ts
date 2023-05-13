@@ -21,6 +21,7 @@ import {
     IWildduckApiGetMessagesOptions,
     IWildduckApiSearchMessagesOptions
 } from "./messages.interface";
+import {AxiosError} from "axios";
 
 /**
  * Messages
@@ -39,8 +40,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     deleteMessage(user: string, mailbox: string, message: number): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/mailboxes/{mailbox}/messages/{message}', { params: { user, mailbox, message } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -56,8 +63,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     getMessage(user: string, mailbox: string, message: number, options?: Partial<IWildduckApiGetMessageOptions>): Promise<IWildduckApiGetMessageResponse> {
         return new Promise<IWildduckApiGetMessageResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes/{mailbox}/messages/{message}', { params: { user, mailbox, message }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -72,8 +85,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     deleteMessagesInMailbox(user: string, mailbox: string, options?: Partial<IWildduckApiDeleteMessagesInMailboxOptions>): Promise<IWildduckApiDeleteMessagesInMailboxResponse> {
         return new Promise<IWildduckApiDeleteMessagesInMailboxResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/mailboxes/{mailbox}/messages', { params: { user, mailbox }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteMessagesInMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteMessagesInMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -88,8 +107,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     getMessagesInMailbox(user: string, mailbox: string, options?: Partial<IWildduckApiGetMessagesOptions>): Promise<IWildduckApiGetMessagesResponse> {
         return new Promise<IWildduckApiGetMessagesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes/{mailbox}/messages', { params: { user, mailbox }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getMessagesInMailbox, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getMessagesInMailbox, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -104,8 +129,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     updateMessage(user: string, mailbox: string, dto: IWildduckApiUpdateMessageRequest): Promise<IWildduckApiUpdateMessageResponse> {
         return new Promise<IWildduckApiUpdateMessageResponse>(async (resolve, reject) => {
             this.http.put('/users/{user}/mailboxes/{mailbox}/messages', { params: { user, mailbox }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -120,8 +151,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     uploadMessage(user: string, mailbox: string, dto: IWildduckApiUploadMessageRequest): Promise<IWildduckApiUploadMessageResponse> {
         return new Promise<IWildduckApiUploadMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/mailboxes/{mailbox}/messages', { params: { user, mailbox }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.uploadMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.uploadMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -138,8 +175,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     forwardMessage(user: string, mailbox: string, message: string, dto: IWildduckApiForwardStoredMessageRequest): Promise<IWildduckApiForwardStoredMessageResponse> {
         return new Promise<IWildduckApiForwardStoredMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/mailboxes/{mailbox}/messages/{message}/forward', { params: { user, mailbox, message }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.forwardMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.forwardMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -156,8 +199,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     downloadAttachment(user: string, mailbox: string, message: string, attachment: string): Promise<Buffer> {
         return new Promise<Buffer>(async (resolve, reject) => {
             this.http.download('/users/{user}/mailboxes/{mailbox}/messages/{message}/attachments/{attachment}', { params: { user, mailbox, message, attachment } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.downloadAttachment, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.downloadAttachment, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -173,8 +222,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     getMessageSource(user: string, mailbox: string, message: string): Promise<string> {
         return new Promise<string>(async (resolve, reject) => {
             this.http.get('/users/{user}/mailboxes/{mailbox}/messages/{message}/message.eml', { params: { user, mailbox, message }, responseType: 'text' })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getMessageSource, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getMessageSource, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -189,8 +244,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     deleteOutboundMessage(user: string, queueId: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/outbound/{queueId}', { params: { user, queueId } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteOutboundMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteOutboundMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -205,8 +266,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     searchMessages(user: string, options?: Partial<IWildduckApiSearchMessagesOptions>): Promise<IWildduckApiSearchMessagesResponse> {
         return new Promise<IWildduckApiSearchMessagesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/search', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.searchMessages, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.searchMessages, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -222,8 +289,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     searchAndUpdateMessages(user: string, dto: any, options?: Partial<IWildduckApiSearchMessagesOptions>): Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             this.http.post('/users/{user}/search', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.searchAndUpdateMessages, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.searchAndUpdateMessages, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -240,8 +313,14 @@ export class WildduckMessagesService extends WildduckClientComponent {
     submitDraftForDelivery(user: string, mailbox: string, message: string, dto: IWildduckApiSubmitStoredMessageRequest): Promise<IWildduckApiSubmitStoredMessageResponse> {
         return new Promise<IWildduckApiSubmitStoredMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/mailboxes/{mailbox}/messages/{message}/submit', { params: { user, mailbox, message }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.submitDraftForDelivery, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.submitDraftForDelivery, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

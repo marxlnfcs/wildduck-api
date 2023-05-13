@@ -9,6 +9,7 @@ import {
     IWildduckApiUpdateTLSCertResponse
 } from "../../client-schema";
 import {IWildduckApiGetTLSCertsOptions} from "./certs.interface";
+import {AxiosError} from "axios";
 
 /**
  * Certs
@@ -25,8 +26,14 @@ export class WildduckCertsService extends WildduckClientComponent {
     deleteCertificate(cert: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/certs/{cert}', { params: { cert } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteCertificate, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteCertificate, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -39,8 +46,14 @@ export class WildduckCertsService extends WildduckClientComponent {
     getCertificate(cert: string): Promise<IWildduckApiGetTLSCertResult> {
         return new Promise<IWildduckApiGetTLSCertResult>(async (resolve, reject) => {
             this.http.get('/certs/{cert}', { params: { cert } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getCertificate, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getCertificate, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -53,8 +66,14 @@ export class WildduckCertsService extends WildduckClientComponent {
     getCertificates(options?: Partial<IWildduckApiGetTLSCertsOptions>): Promise<IWildduckApiGetTLSCertsResponse> {
         return new Promise<IWildduckApiGetTLSCertsResponse>(async (resolve, reject) => {
             this.http.get('/certs', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getCertificates, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getCertificates, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -68,8 +87,14 @@ export class WildduckCertsService extends WildduckClientComponent {
     setCertificate(dto: IWildduckApiUpdateTLSCertRequest): Promise<IWildduckApiUpdateTLSCertResponse> {
         return new Promise<IWildduckApiUpdateTLSCertResponse>(async (resolve, reject) => {
             this.http.post('/certs', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.setCertificate, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.setCertificate, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -82,8 +107,14 @@ export class WildduckCertsService extends WildduckClientComponent {
     resolveServerNameId(serverName: string): Promise<IWildduckApiResolveIdResponse> {
         return new Promise<IWildduckApiResolveIdResponse>(async (resolve, reject) => {
             this.http.get('/certs/resolve/{serverName}', { params: { serverName } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.resolveServerNameId, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.resolveServerNameId, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

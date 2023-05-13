@@ -9,6 +9,7 @@ import {
     IWildduckApiUpdateDkimKeyResponse
 } from "../../client-schema";
 import {IWildduckApiGetDkimKeysOptions} from "./dkim.interface";
+import {AxiosError} from "axios";
 
 /**
  * DKIM
@@ -25,8 +26,14 @@ export class WildduckDKIMService extends WildduckClientComponent {
     deleteDKIM(dkim: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/dkim/{dkim}', { params: { dkim } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteDKIM, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteDKIM, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -39,8 +46,14 @@ export class WildduckDKIMService extends WildduckClientComponent {
     getDKIM(dkim: string): Promise<IWildduckApiGetDkimKeyResponse> {
         return new Promise<IWildduckApiGetDkimKeyResponse>(async (resolve, reject) => {
             this.http.get('/dkim/{dkim}', { params: { dkim } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getDKIM, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getDKIM, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -53,8 +66,14 @@ export class WildduckDKIMService extends WildduckClientComponent {
     getDKIMs(options?: Partial<IWildduckApiGetDkimKeysOptions>): Promise<IWildduckApiGetDkimKeysResponse> {
         return new Promise<IWildduckApiGetDkimKeysResponse>(async (resolve, reject) => {
             this.http.get('/dkim', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getDKIMs, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getDKIMs, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -67,8 +86,14 @@ export class WildduckDKIMService extends WildduckClientComponent {
     setDKIM(dto: IWildduckApiUpdateDkimKeyRequest): Promise<IWildduckApiUpdateDkimKeyResponse> {
         return new Promise<IWildduckApiUpdateDkimKeyResponse>(async (resolve, reject) => {
             this.http.post('/dkim', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.setDKIM, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.setDKIM, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -81,8 +106,14 @@ export class WildduckDKIMService extends WildduckClientComponent {
     resolveDKIM(domain: string): Promise<IWildduckApiResolveIdResponse> {
         return new Promise<IWildduckApiResolveIdResponse>(async (resolve, reject) => {
             this.http.get('/dkim/resolve/{domain}', { params: { domain } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.resolveDKIM, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.resolveDKIM, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

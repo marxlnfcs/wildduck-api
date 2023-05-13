@@ -18,18 +18,28 @@ npm i @marxlnfcs/wildduck-api
 ```
 
 ## Usage
-```
-(async () => {
-     
-    // create a new client instance
-    const client = createWildduckClient({
-        baseUrl: 'http://api.wildduck.mail',
-        accessTOken: 'super-secret-access-key'
-    });
-    
-    // list all users
-    console.log(await client.users.getUsers());
 
+```typescript
+import {createWildduckClient} from "./wildduck";
+
+(async () => {
+
+  // create a new client instance
+  const client = createWildduckClient({
+    baseUrl: 'http://api.wildduck.mail',
+    accessToken: 'super-secret-access-key'
+  });
+
+  // intercept request for retrieving all users
+  client.on(client.users.getUsers).subscribe((event) => {
+    console.log(event.request); // AxiosRequestConfig
+    console.log(event.response); // AxiosResponse
+    console.log(event.error); // AxiosError
+  });
+
+  // list all users
+  console.log(await client.users.getUsers());
+  
 });
 ```
 

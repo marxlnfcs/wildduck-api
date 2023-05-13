@@ -12,6 +12,7 @@ import {
     IWildduckApiDisableTotp2FAOptions,
     IWildduckApiEnable2FAOptions
 } from "./two-factor-auth.interface";
+import {AxiosError} from "axios";
 
 /**
  * TwoFactorAuth
@@ -30,8 +31,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     check2FA(user: string, dto: IWildduckApiCheckTotp2FARequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/2fa/totp/check', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.check2FA, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.check2FA, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -45,8 +52,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     disable2FA(user: string, options?: Partial<IWildduckApiDisable2FAOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/2fa', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.disable2FA, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.disable2FA, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -61,8 +74,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     disableCustom2FA(user: string, options?: Partial<IWildduckApiDisable2FAOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/2fa/custom', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.disableCustom2FA, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.disableCustom2FA, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -77,8 +96,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     enableCustom2FA(user: string, options?: Partial<IWildduckApiEnable2FAOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.put('/users/{user}/2fa/custom', { params: { user }, body: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.enableCustom2FA, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.enableCustom2FA, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -93,8 +118,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     disableTOTPAuth(user: string, options?: Partial<IWildduckApiDisableTotp2FAOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.put('/users/{user}/2fa/totp', { params: { user }, body: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.disableTOTPAuth, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.disableTOTPAuth, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -109,8 +140,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     enableTOTPSeed(user: string, dto: IWildduckApiEnableTotp2FARequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/2fa/totp', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.enableTOTPSeed, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.enableTOTPSeed, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -125,8 +162,14 @@ export class WildduckTwoFactorAuthService extends WildduckClientComponent {
     generateTOTPSeed(user: string, dto: IWildduckApiSetupTotp2FARequest): Promise<IWildduckApiSetupTotp2FAResponse> {
         return new Promise<IWildduckApiSetupTotp2FAResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/2fa/totp/setup', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.generateTOTPSeed, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.generateTOTPSeed, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

@@ -7,6 +7,7 @@ import {
     IWildduckApiSuccessResponse
 } from "../../client-schema";
 import {IWildduckApiGetWebhooksOptions} from "./webhooks.interface";
+import {AxiosError} from "axios";
 
 /**
  * Webhooks
@@ -23,8 +24,14 @@ export class WildduckWebhooksService extends WildduckClientComponent {
     deleteWebhook(webhook: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/webhooks/{webhook}', { params: { webhook } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteWebhook, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteWebhook, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -38,8 +45,14 @@ export class WildduckWebhooksService extends WildduckClientComponent {
     getWebhooks(type: string, options?: Partial<IWildduckApiGetWebhooksOptions>): Promise<IWildduckApiGetWebhooksResponse> {
         return new Promise<IWildduckApiGetWebhooksResponse>(async (resolve, reject) => {
             this.http.get('/webhooks', { query: { type, ...(options || {}) } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getWebhooks, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getWebhooks, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -51,8 +64,14 @@ export class WildduckWebhooksService extends WildduckClientComponent {
     createWebhook(dto: IWildduckApiCreateWebhookRequest): Promise<IWildduckApiCreateWebhookResponse> {
         return new Promise<IWildduckApiCreateWebhookResponse>(async (resolve, reject) => {
             this.http.post('/webhooks', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createWebhook, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createWebhook, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

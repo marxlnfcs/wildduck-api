@@ -20,6 +20,7 @@ import {
     IWildduckApiRecoverInfoOptions
 } from "./users.interface";
 import {SSESource} from "../../../interfaces/sse.interface";
+import {AxiosError} from "axios";
 
 /**
  * Users
@@ -38,8 +39,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     deleteUser(id: string, options?: Partial<IWildduckApiDeleteUserOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{id}', { params: { id }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -52,8 +59,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     getUser(id: string): Promise<IWildduckApiGetUserResponse> {
         return new Promise<IWildduckApiGetUserResponse>(async (resolve, reject) => {
             this.http.get('/users/{id}', { params: { id } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -67,8 +80,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     updateUser(id: string, dto: IWildduckApiUpdateUserRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.put('/users/{id}', { params: { id }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -97,8 +116,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     resolveUserId(username: string): Promise<IWildduckApiResolveIdResponse> {
         return new Promise<IWildduckApiResolveIdResponse>(async (resolve, reject) => {
             this.http.get('/users/resolve/{username}', { params: { username } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.resolveUserId, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.resolveUserId, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -112,8 +137,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     restoreUserInfo(id: string, options?: Partial<IWildduckApiRecoverInfoOptions>): Promise<IWildduckApiRecoverInfoResponse> {
         return new Promise<IWildduckApiRecoverInfoResponse>(async (resolve, reject) => {
             this.http.get('/users/{id}/restore', { params: { id }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.restoreUserInfo, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.restoreUserInfo, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -128,8 +159,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     restoreUser(id: string, options?: Partial<IWildduckApiRecoverInfoOptions>): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.post('/users/{id}/restore', { params: { id }, body: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.restoreUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.restoreUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -142,8 +179,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     getUsers(options?: Partial<IWildduckApiGetUsersOptions>): Promise<IWildduckApiGetUsersResponse> {
         return new Promise<IWildduckApiGetUsersResponse>(async (resolve, reject) => {
             this.http.get('/users', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getUsers, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getUsers, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -156,8 +199,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     createUser(dto: IWildduckApiCreateUserRequest): Promise<IWildduckApiCreateUserResponse> {
         return new Promise<IWildduckApiCreateUserResponse>(async (resolve, reject) => {
             this.http.post('/users', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -171,8 +220,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     recalculateQuota(user: string): Promise<IWildduckApiRecalculateQuotaResponse> {
         return new Promise<IWildduckApiRecalculateQuotaResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/quota/reset', { params: { user } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.recalculateQuota, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.recalculateQuota, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -185,8 +240,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     recalculateQuotaAllUsers(): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.post('/users/reset')
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.recalculateQuotaAllUsers, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.recalculateQuotaAllUsers, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -199,8 +260,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     logoutUser(id: string, dto: IWildduckApiLogoutUserRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.put('/users/{id}/logout', { params: { id }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.logoutUser, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.logoutUser, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -213,8 +280,14 @@ export class WildduckUsersService extends WildduckClientComponent {
     resetUserPassword(id: string, dto: IWildduckApiResetUserPasswordRequest): Promise<IWildduckApiResetUserPasswordResponse> {
         return new Promise<IWildduckApiResetUserPasswordResponse>(async (resolve, reject) => {
             this.http.post('/users/{id}/password/reset', { params: { id }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.resetUserPassword, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.resetUserPassword, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

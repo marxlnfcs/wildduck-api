@@ -5,6 +5,7 @@ import {
     IWildduckApiCreateAuditResponse,
     IWildduckApiGetAuditResponse
 } from "../../client-schema";
+import {AxiosError} from "axios";
 
 /**
  * Audit
@@ -23,8 +24,14 @@ export class WildduckAuditService extends WildduckClientComponent {
     getAudit(audit: string): Promise<IWildduckApiGetAuditResponse> {
         return new Promise<IWildduckApiGetAuditResponse>(async (resolve, reject) => {
             this.http.get('/audit/{audit}', { params: { audit } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getAudit, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getAudit, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -38,8 +45,14 @@ export class WildduckAuditService extends WildduckClientComponent {
     getAuditEmails(audit: string): Promise<Buffer> {
         return new Promise<Buffer>(async (resolve, reject) => {
             this.http.download('/audit/{audit}/export.mbox', { method: 'GET', params: { audit } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getAuditEmails, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getAuditEmails, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -53,8 +66,14 @@ export class WildduckAuditService extends WildduckClientComponent {
     createAudit(dto: IWildduckApiCreateAuditRequest): Promise<IWildduckApiCreateAuditResponse> {
         return new Promise<IWildduckApiCreateAuditResponse>(async (resolve, reject) => {
             this.http.post('/audit', { body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createAudit, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createAudit, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

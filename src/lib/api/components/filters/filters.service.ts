@@ -11,6 +11,7 @@ import {
     IWildduckApiUpdateFilterResponse
 } from "../../client-schema";
 import {IWildduckApiGetAllFiltersOptions} from "./filters.interface";
+import {AxiosError} from "axios";
 
 /**
  * Filters
@@ -28,8 +29,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     deleteFilter(user: string, filter: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/filters/{filter}', { params: { user, filter } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteFilter, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteFilter, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -43,8 +50,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     getFilter(user: string, filter: string): Promise<IWildduckApiGetFilterResponse> {
         return new Promise<IWildduckApiGetFilterResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/filters/{filter}', { params: { user, filter } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getFilter, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getFilter, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -60,8 +73,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     updateFilter(user: string, filter: string, dto: IWildduckApiUpdateFilterRequest): Promise<IWildduckApiUpdateFilterResponse> {
         return new Promise<IWildduckApiUpdateFilterResponse>(async (resolve, reject) => {
             this.http.put('/users/{user}/filters/{filter}', { params: { user, filter }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.updateFilter, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.updateFilter, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -74,8 +93,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     getFilters(options?: Partial<IWildduckApiGetAllFiltersOptions>): Promise<IWildduckApiGetAllFiltersResponse> {
         return new Promise<IWildduckApiGetAllFiltersResponse>(async (resolve, reject) => {
             this.http.get('/filters', { query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getFilters, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getFilters, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -88,8 +113,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     getUserFilters(user: string): Promise<IWildduckApiGetFiltersResponse> {
         return new Promise<IWildduckApiGetFiltersResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/filters', { params: { user } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getUserFilters, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getUserFilters, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -103,8 +134,14 @@ export class WildduckFiltersService extends WildduckClientComponent {
     createUserFilter(user: string, dto: IWildduckApiCreateFilterRequest): Promise<IWildduckApiResolveIdResponse> {
         return new Promise<IWildduckApiResolveIdResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/filters', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createUserFilter, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createUserFilter, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

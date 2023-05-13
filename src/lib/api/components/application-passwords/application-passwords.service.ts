@@ -7,6 +7,7 @@ import {
     IWildduckApiGetASPsResponse,
     IWildduckApiSuccessResponse
 } from "../../client-schema";
+import {AxiosError} from "axios";
 
 /**
  * Application Passwords
@@ -24,8 +25,14 @@ export class WildduckApplicationPasswordsService extends WildduckClientComponent
     deleteApplicationPassword(user: string, asp: string): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/users/{user}/asps/{asp}', { params: { user, asp } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteApplicationPassword, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteApplicationPassword, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -39,8 +46,14 @@ export class WildduckApplicationPasswordsService extends WildduckClientComponent
     getApplicationPassword(user: string, asp: string): Promise<IWildduckApiGetASPResponse> {
         return new Promise<IWildduckApiGetASPResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/asps/{asp}', { params: { user, asp } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getApplicationPassword, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getApplicationPassword, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -53,8 +66,14 @@ export class WildduckApplicationPasswordsService extends WildduckClientComponent
     getApplicationPasswords(user: string): Promise<IWildduckApiGetASPsResponse> {
         return new Promise<IWildduckApiGetASPsResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/asps', { params: { user } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getApplicationPasswords, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getApplicationPasswords, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -68,8 +87,14 @@ export class WildduckApplicationPasswordsService extends WildduckClientComponent
     createApplicationPassword(user: string, dto: IWildduckApiCreateASPRequest): Promise<IWildduckApiCreateASPResponse> {
         return new Promise<IWildduckApiCreateASPResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/asps', { params: { user } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createApplicationPassword, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createApplicationPassword, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

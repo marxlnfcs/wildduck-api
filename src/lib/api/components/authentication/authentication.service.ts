@@ -12,6 +12,7 @@ import {
     IWildduckApiPreCheckAuthRequest,
     IWildduckApiPreCheckAuthResponse
 } from "./authentication.interface";
+import {AxiosError} from "axios";
 
 /**
  * Authentication
@@ -28,8 +29,14 @@ export class WildduckAuthenticationService extends WildduckClientComponent {
     deleteAuthenticationToken(): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiSuccessResponse>(async (resolve, reject) => {
             this.http.delete('/authenticate')
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.deleteAuthenticationToken, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.deleteAuthenticationToken, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -42,8 +49,14 @@ export class WildduckAuthenticationService extends WildduckClientComponent {
     createAuthenticationToken(dto: IWildduckApiAuthenticateRequest): Promise<IWildduckApiAuthenticateResponse> {
         return new Promise<IWildduckApiAuthenticateResponse>(async (resolve, reject) => {
             this.http.post('/authenticate')
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.createAuthenticationToken, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.createAuthenticationToken, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -57,8 +70,14 @@ export class WildduckAuthenticationService extends WildduckClientComponent {
     preAuthCheck(dto: IWildduckApiPreCheckAuthRequest): Promise<IWildduckApiPreCheckAuthResponse> {
         return new Promise<IWildduckApiPreCheckAuthResponse>(async (resolve, reject) => {
             this.http.post('/preauth')
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.preAuthCheck, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.preAuthCheck, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -72,8 +91,14 @@ export class WildduckAuthenticationService extends WildduckClientComponent {
     getAuthenticationEvents(user: string, options?: Partial<IWildduckApiGetAuthlogOptions>): Promise<IWildduckApiGetAuthlogResponse> {
         return new Promise<IWildduckApiGetAuthlogResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/authlog', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getAuthenticationEvents, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getAuthenticationEvents, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -87,8 +112,14 @@ export class WildduckAuthenticationService extends WildduckClientComponent {
     getAuthenticationEvent(user: string, event: string): Promise<IWildduckApiGetAuthlogEventResponse> {
         return new Promise<IWildduckApiGetAuthlogEventResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/authlog/{event}', { params: { user, event } })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getAuthenticationEvent, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getAuthenticationEvent, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

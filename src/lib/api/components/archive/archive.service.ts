@@ -8,6 +8,7 @@ import {
     IWildduckApiSuccessResponse
 } from "../../client-schema";
 import {IWildduckApiGetArchivedMessagesOptions} from "./archive.interface";
+import {AxiosError} from "axios";
 
 /**
  * Archive
@@ -25,8 +26,14 @@ export class WildduckArchiveService extends WildduckClientComponent {
     getArchivedMessages(user: string, options?: Partial<IWildduckApiGetArchivedMessagesOptions>): Promise<IWildduckApiGetArchivedMessagesResponse> {
         return new Promise<IWildduckApiGetArchivedMessagesResponse>(async (resolve, reject) => {
             this.http.get('/users/{user}/archived/messages', { params: { user }, query: options })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.getArchivedMessages, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.getArchivedMessages, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -41,8 +48,14 @@ export class WildduckArchiveService extends WildduckClientComponent {
     restoreArchivedMessage(user: string, message: string, dto: IWildduckApiRestoreMessageRequest): Promise<IWildduckApiRestoreMessageResponse> {
         return new Promise<IWildduckApiRestoreMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/archived/messages/{message}/restore', { params: { user, message }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.restoreArchivedMessage, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.restoreArchivedMessage, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 
@@ -57,8 +70,14 @@ export class WildduckArchiveService extends WildduckClientComponent {
     restoreArchivedMessages(user: string, dto: IWildduckApiRestoreMessagesRequest): Promise<IWildduckApiSuccessResponse> {
         return new Promise<IWildduckApiRestoreMessageResponse>(async (resolve, reject) => {
             this.http.post('/users/{user}/archived/restore', { params: { user }, body: dto })
-                .then(r => resolve(r.data))
-                .catch(e => reject(createHttpException(e)))
+              .then(r => {
+                  this.events.emitFromResponse(this.restoreArchivedMessages, r);
+                  resolve(r.data);
+              })
+              .catch((e: AxiosError) => {
+                  this.events.emitFromError(this.restoreArchivedMessages, e);
+                  reject(createHttpException(e));
+              })
         });
     }
 

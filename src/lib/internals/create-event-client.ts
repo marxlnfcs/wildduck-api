@@ -61,7 +61,7 @@ export class EventClient {
    */
   emitFromResponse<RequestData = any, ResponseData = any>(id: string|Function, response: AxiosResponse<ResponseData, RequestData>): EventClientEvent<RequestData, ResponseData> {
     return this.emit(id, {
-      request: response.request,
+      request: response.config,
       response: response,
       error: null,
     });

@@ -19,7 +19,7 @@ describe(`Create user with name "${data.name}" and username "${data.username}"`,
         await CLIENT.users.createUser(data).catch(throwError);
     });
 
-    // resovle user
+    // resolve user
     test(`Resolve user by its username "${data.username}"`, async () => {
         const response = await CLIENT.users.resolveUserId(data.username);
         user = await CLIENT.users.getUser(response.id);

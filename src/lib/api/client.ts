@@ -22,7 +22,7 @@ import {WildduckExportService} from "./components/export/export.service";
 import {WildduckAuditService} from "./components/audit/audit.service";
 import {createSSEClient} from "../internals/create-sse-client";
 import {createEventClient, EventClientEvent} from "../internals/create-event-client";
-import {Observable} from "rxjs";
+import {merge, Observable} from "rxjs";
 
 export class WildduckClient {
     private http = createHttpClient(this.options)
@@ -59,7 +59,9 @@ export class WildduckClient {
      * To use this, set the function as first parameter on the function
      * @param id
      */
-    on<RequestData = any, ResponseData = any>(id: Function): Observable<EventClientEvent<RequestData, ResponseData>> {
-        return this.events.on(id);
+    on<RequestData = any, ResponseData = any>(id: Function): Observable<EventClientEvent<RequestData, ResponseData>>;
+    on(...ids: Function[]): Observable<EventClientEvent>;
+    on(...ids: Function[]): Observable<EventClientEvent> {
+        return merge(...ids.map(i => this.events.on(i)));
     }
 }

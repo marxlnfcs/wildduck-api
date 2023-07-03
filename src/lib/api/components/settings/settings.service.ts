@@ -17,6 +17,26 @@ import {AxiosError} from "axios";
 export class WildduckSettingsService extends WildduckClientComponent {
 
     /**
+     * Get Settings
+     * @see https://docs.wildduck.email/api/#operation/getSettings
+     *
+     * @param options
+     */
+    getSettings(options?: Partial<IWildduckApiGetSettingsOptions>): Promise<IWildduckApiGetSettingsResponse> {
+        return new Promise<IWildduckApiGetSettingsResponse>(async (resolve, reject) => {
+            this.http.get('/settings', { query: options })
+                .then(r => {
+                    this.events.emitFromResponse(this.getSettings, r);
+                    resolve(r.data);
+                })
+                .catch((e: AxiosError) => {
+                    this.events.emitFromError(this.getSettings, e);
+                    reject(createHttpException(e));
+                })
+        });
+    }
+
+    /**
      * Delete a message
      * @see https://docs.wildduck.email/api/#operation/deleteMessage
      *
@@ -73,26 +93,6 @@ export class WildduckSettingsService extends WildduckClientComponent {
               })
               .catch((e: AxiosError) => {
                   this.events.emitFromError(this.setSetting, e);
-                  reject(createHttpException(e));
-              })
-        });
-    }
-
-    /**
-     * Create or Update Setting
-     * @see https://docs.wildduck.email/api/#operation/createSetting
-     *
-     * @param options
-     */
-    setSettings(options?: Partial<IWildduckApiGetSettingsOptions>): Promise<IWildduckApiGetSettingsResponse> {
-        return new Promise<IWildduckApiGetSettingsResponse>(async (resolve, reject) => {
-            this.http.get('/settings', { query: options })
-              .then(r => {
-                  this.events.emitFromResponse(this.setSettings, r);
-                  resolve(r.data);
-              })
-              .catch((e: AxiosError) => {
-                  this.events.emitFromError(this.setSettings, e);
                   reject(createHttpException(e));
               })
         });
